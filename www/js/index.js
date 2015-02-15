@@ -20,6 +20,8 @@ var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
+
+
     },
     // Bind Event Listeners
     //
@@ -48,7 +50,10 @@ var app = {
 
         //console.log('Received Event: ' + id);
     }
+	
+  
 };
+
 //-----------------------------------------------------------------------------
 
 var myLat = 21.291633588436564;
@@ -106,15 +111,15 @@ function _getWindowHeight(win) {
 //-----------------------------------------------------------------------------
 
 function Restroom() {
-  this.id = 0;
+  this._id = '0';
   this.name = '';
-  this.lat = 0;
-  this.lon = 0;
+  this.lat = '0';
+  this.lon = '0';
   this.locDetail = '';
-  this.accesPublic = true;
-  this.accesCustomer = false;
-  this.family = false;
-  this.timestamp = new Date();
+  this.accesPublic = 'true';
+  this.accesCustomer = 'false';
+  this.family = 'false';
+  this.timestamp = new Date().toString();
   this.user = ''; // need to get current user id/name
 }
 //-----------------------------------------------------------------------------
@@ -243,14 +248,18 @@ function plotRestrooms() {
 
 var aRestroom = new Array();
 
+
+//var TestObject = Parse.Object.extend("Testgo");
+
 // dummy test records
 var restroom = new Restroom();
-restroom.id = 1;
+restroom._id = 1;
 restroom.name = "Macy's";
 restroom.locDetail = "3rd floor";
 restroom.lat = 21.290352727863862;
 restroom.lon = -157.8416557610035;
 aRestroom[0] = restroom;
+
 
 // dummy test records
 restroom = new Restroom();
@@ -260,6 +269,28 @@ restroom.lat = 21.294803078971693;
 restroom.lon = -157.84295797348022;
 aRestroom[1] = restroom;
 
+//-----------------------------------------------------------------------------
+
+function addParseRecord() {
+  var TestObject = Parse.Object.extend("Testgo");
+  var testObject = new TestObject();
+
+    testObject.save({
+    idRestroom: restroom._id,
+    name: restroom.name,
+    locDetail: restroom.locDetail
+  }, {
+  success: function(object) {
+    console.log(object)
+     $(".success").show();
+   }, 
+   error: function(model, error) {
+     console.log(error)
+	 $(".error").show();
+   }
+});    
+
+}
 //-----------------------------------------------------------------------------
 
 function x_mapLoad() {
@@ -421,6 +452,9 @@ function insertReview(id) {
 function updateRestroom(id) {
   // input fields to restroom object fields
   // update restroom record in database 
+  
+  addParseRecord();
+
   
   hideAddReview(); 
 

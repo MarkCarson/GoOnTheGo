@@ -61,10 +61,15 @@ var myLon = -157.84459948539734;
 
 //-----------------------------------------------------------------------------
 
-function setLatLong() {
+function setLatLon() {
   // need to get Lat/Long from phone's GPS
-  myLat = 21.291633588436564;
-  myLon = -157.84459948539734;
+  
+   navigator.geolocation.getCurrentPosition(function(location){
+     myLat = location.coords.latitude; //21.291633588436564;
+     myLon = location.coords.longitude; //-157.84459948539734;
+	 //alert("setLatLon()\nmyLat = " + myLat);
+  }, function(error) {}
+  );	 
 }
 //-----------------------------------------------------------------------------
 
@@ -144,7 +149,9 @@ function User() {
 var map = null;
 
 function mapLoad() {
-  var myLatlng = new google.maps.LatLng(21.291633588436564, -157.84459948539734);
+  //var myLatlng = new google.maps.LatLng(21.291633588436564, -157.84459948539734);
+  setLatLon();
+  var myLatlng = new google.maps.LatLng(myLat, myLon);
   var mapOptions = {
     zoom: 15,
     center: myLatlng
@@ -272,6 +279,7 @@ aRestroom[1] = restroom;
 //-----------------------------------------------------------------------------
 
 function addParseRecord() {
+  //Parse.initialize("EftvHRsGTBWfSr4vKBjfAtM89z4tHGhdkKBZxPOP", "Cf5HK3DPPvOXCYXqRenRebeZaYWAfxv9KqiYQwG6");
   var TestObject = Parse.Object.extend("Testgo");
   var testObject = new TestObject();
   alert('addParseRecord');
@@ -476,7 +484,11 @@ function insertRestroom() {
   var restroom = new Restroom();
   // input fields to restroom object fields
   // insert restroom record into database - get returned ID value
-  alert("Insert restroom record into database.");
+ 
+   addParseRecord();
+ 
+
+  //alert("Insert restroom record into database.");
 
   addParseRecord();
 

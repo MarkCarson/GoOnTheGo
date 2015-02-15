@@ -50,7 +50,7 @@ var app = {
 
         //console.log('Received Event: ' + id);
     }
-	
+  
   
 };
 
@@ -202,16 +202,16 @@ function plotRestroom(restroom) {
   var flag = flag1;
   switch(getAvgRating(restroom)) {
     case 1: flag = flag1; 
-	  break;
+    break;
     case 2: flag = flag2; 
-	  break;
+    break;
     case 3: flag = flag3; 
-	  break;
+    break;
     case 4: flag = flag4; 
-	  break;
+    break;
     case 5: flag = flag5; 
-	  break;
-  } // end switch	  
+    break;
+  } // end switch   
   var str = restroom.name;
   if (restroom.locDetail != '')
     str += " - " + restroom.locDetail;
@@ -219,10 +219,10 @@ function plotRestroom(restroom) {
   var marker = new google.maps.Marker({
       position: myLatlng,
       map: map,
-	  icon: flag,
-	  zIndex: 2,
+    icon: flag,
+    zIndex: 2,
       title: str
-	  
+    
   });
 }
 //-----------------------------------------------------------------------------
@@ -232,13 +232,13 @@ function plotRestrooms() {
   var plotted = 0;
   for (var i = 0; i < aRestroom.length; i++) {
     var rating = getAvgRating(restroom);
-	if (rating >= minStars) {
-	  plotted++;
+  if (rating >= minStars) {
+    plotted++;
       plotRestroom(aRestroom[i]);
-	  //alert("minStars = " + minStars + "\nrestroom has " + rating + " stars (plotting)");
-	}
-	else {
-	  //alert("minStars = " + minStars + "\nrestroom has " + rating + " stars (skipping)");
+    //alert("minStars = " + minStars + "\nrestroom has " + rating + " stars (plotting)");
+  }
+  else {
+    //alert("minStars = " + minStars + "\nrestroom has " + rating + " stars (skipping)");
     }  
   }
   if (plotted == 0)
@@ -274,6 +274,7 @@ aRestroom[1] = restroom;
 function addParseRecord() {
   var TestObject = Parse.Object.extend("Testgo");
   var testObject = new TestObject();
+  alert('addParseRecord');
 
     testObject.save({
     idRestroom: restroom._id,
@@ -286,7 +287,7 @@ function addParseRecord() {
    }, 
    error: function(model, error) {
      console.log(error)
-	 $(".error").show();
+   $(".error").show();
    }
 });    
 
@@ -476,6 +477,8 @@ function insertRestroom() {
   // input fields to restroom object fields
   // insert restroom record into database - get returned ID value
   alert("Insert restroom record into database.");
+
+  addParseRecord();
 
   insertReview(restroom.id);
   // call plot() again (to display new data)

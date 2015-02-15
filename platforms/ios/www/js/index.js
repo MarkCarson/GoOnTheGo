@@ -35,21 +35,33 @@ var app = {
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
         mapLoad();
-        google.maps.event.addDomListener(window, 'load', initialize);
+        google.maps.event.addDomListener(window, 'load', this.initialize);
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+        // var parentElement = document.getElementById(id);
+        //var listeningElement = parentElement.querySelector('.listening');
+        //var receivedElement = parentElement.querySelector('.received');
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        //listeningElement.setAttribute('style', 'display:none;');
+        //receivedElement.setAttribute('style', 'display:block;');
 
-        console.log('Received Event: ' + id);
+        //console.log('Received Event: ' + id);
     }
 };
+//-----------------------------------------------------------------------------
 
+var myLat = 21.291633588436564;
+var myLon = -157.84459948539734;
+
+//-----------------------------------------------------------------------------
+
+function setLatLong() {
+  // need to get Lat/Long from phone's GPS
+  myLat = 21.291633588436564;
+  myLon = -157.84459948539734;
+}
+//-----------------------------------------------------------------------------
 
 function getWindowWidth() { // Assumes current window to be used
   return _getWindowWidth(window);
@@ -143,12 +155,58 @@ function mapLoad() {
 //-----------------------------------------------------------------------------
 
 var shape = {
-coord: [1, 1, 1, 20, 18, 20, 18 , 1],
-    type: 'poly'
+  coord: [1, 1, 1, 20, 18, 20, 18 , 1],
+  type: 'poly'
  };
+ 
+ var flag1 = new google.maps.MarkerImage('img/toilet1.png',
+      new google.maps.Size(26, 35),
+      new google.maps.Point(0,0),
+      new google.maps.Point(0, 17));
+ 
+ var flag2 = new google.maps.MarkerImage('img/toilet2.png',
+      new google.maps.Size(26, 35),
+      new google.maps.Point(0,0),
+      new google.maps.Point(0, 17)); 
+
+var flag3 = new google.maps.MarkerImage('img/toilet3.png',
+      new google.maps.Size(26, 35),
+      new google.maps.Point(0,0),
+      new google.maps.Point(0, 17)); 
+
+var flag4 = new google.maps.MarkerImage('img/toilet4.png',
+      new google.maps.Size(26, 35),
+      new google.maps.Point(0,0),
+      new google.maps.Point(0, 17)); 
+
+var flag5 = new google.maps.MarkerImage('img/toilet5.png',
+      new google.maps.Size(26, 35),
+      new google.maps.Point(0,0),
+      new google.maps.Point(0, 17));
+
+//-----------------------------------------------------------------------------
+
+function getAvgRating(restroom) {
+  return (restroom.id % 5) + 1;
+}
+//-----------------------------------------------------------------------------
 
 function plotRestroom(restroom) {
   //alert("plotRestroom()\nrestroom.id = " + restroom.id);
+  var stars = getAvgRating(restroom);
+  var flag = flag1;
+  switch(getAvgRating(restroom)) {
+    case 1: flag = flag1; 
+	  break;
+    case 2: flag = flag2; 
+	  break;
+    case 3: flag = flag3; 
+	  break;
+    case 4: flag = flag4; 
+	  break;
+    case 5: flag = flag5; 
+	  break;
+  } // end switch	  
   var str = restroom.name;
   if (restroom.locDetail != '')
     str += " - " + restroom.locDetail;
@@ -156,17 +214,30 @@ function plotRestroom(restroom) {
   var marker = new google.maps.Marker({
       position: myLatlng,
       map: map,
+	  icon: flag,
+	  zIndex: 2,
       title: str
-      
+	  
   });
-}  
+}
 //-----------------------------------------------------------------------------
 
 function plotRestrooms() {
   //alert("plotRestrooms()\naRestroom.length = " + aRestroom.length);
+  var plotted = 0;
   for (var i = 0; i < aRestroom.length; i++) {
-    plotRestroom(aRestroom[i]);
+    var rating = getAvgRating(restroom);
+	if (rating >= minStars) {
+	  plotted++;
+      plotRestroom(aRestroom[i]);
+	  //alert("minStars = " + minStars + "\nrestroom has " + rating + " stars (plotting)");
+	}
+	else {
+	  //alert("minStars = " + minStars + "\nrestroom has " + rating + " stars (skipping)");
+    }  
   }
+  if (plotted == 0)
+   alert("No restrooms found that meet your criteria.");
 }
 //-----------------------------------------------------------------------------
 
@@ -321,11 +392,14 @@ function addRestroom() {
   var width = 380; 
   divAdd.style.width = width + 'px';
   divAdd.style.opacity = 0.90;
-  var left = (getWindowWidth() - width) / 2;
+  var left = 10; //(getWindowWidth() - width) / 2;
   if (left < 0)
     left = 0;
   divAdd.style.left = left + 'px';    
   divAdd.style.display = ''; // make visible
+  document.getElementById('rrLat').value = myLat;
+  document.getElementById('rrLon').value = myLon;
+
 }
 //-----------------------------------------------------------------------------
 
